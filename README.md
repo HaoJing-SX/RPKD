@@ -6,6 +6,59 @@ This is the official implementation of "Reflectance Prediction-Based Knowledge D
 
 <img src="docs/Overall3.png" align="center" width="100%">
 
+## Dataset Construction
+For KITTI, we used 7,481 labeled point cloud samples, split into 3,712 for training and 3,769 for validation. For DAIR-V2X-V, we used 6,509 training frames, split into 4,335 for training and 2,174 for validation. We trained the [`PCC-S`](https://github.com/zlichen/PCC-S) network on the raw point-cloud training split for compression learning, then applied it to reconstruct point clouds at octree levels 12, 11, and 10, denoted as PCC-S-C12, PCC-S-C11, and PCC-S-C10, respectively. Training ran for 20 epochs on a single RTX 8000 GPU with batch size 2 and a maximum octree level of 12.
+
+## Pre-training Raw Point-Cloud Model
+The raw point-cloud model is first trained on the original KITTI dataset, and the best-performing checkpoint is then used to initialize the teacher model for knowledge distillation.
+
+### Dataset
+```
+kitti
+│── ImageSets
+|── gt_database
+│── training
+│   ├──calib & velodyne & label_2 & image_2 & planes
+```
+* The folder “gt_database” contains the ground-truth annotations of the raw point clouds, while “velodyne” stores the raw point-cloud data.
+
+### Training
+```
+cd tools/
+```
+Training the Raw Point-Cloud Model on the Voxel-RCNN Baseline Network with 4 GPUs:
+```
+CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4 train.py --cfg_file ./cfgs/kitti_models/voxel_rcnn/rpvoxel_nr.yaml
+```
+
+## Pre-training Compressed Point-Cloud Model
+The compressed point-cloud models are first trained on the KITTI dataset at octree levels 12, 11, and 10, denoted as PCC-S-C12, PCC-S-C11, and PCC-S-C10, respectively. The best-performing checkpoint at each level is then used to initialize the corresponding student model for knowledge distillation.
+
+### Dataset
+```
+kitti
+│── ImageSets
+|── gt_database
+│── training
+│   ├──calib & velodyne & label_2 & image_2 & planes
+```
+* When using the KITTI PCC-S-C11 dataset, the folder “gt_database” contains the PCC-S-C11 ground-truth annotations, while “velodyne” stores the corresponding compressed data.
+
+### Training
+```
+cd tools/
+```
+Training the Raw Point-Cloud Model on the Voxel-RCNN Baseline Network with 4 GPUs:
+```
+CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4 train.py --cfg_file ./cfgs/kitti_models/voxel_rcnn/rpvoxel_rcnn.yaml
+```
+
+## Cross-Source Distillation Training Strategy (CDTS)
+The proposed CDTS transfers distilled knowledge from raw to low-quality compressed data, significantly improving detection
+accuracy.
+
+<img src="docs/CDTS3.png" align="center" width="50%">
+
 ## License
 
 `SMS` is released under the [Apache 2.0 license](LICENSE).
