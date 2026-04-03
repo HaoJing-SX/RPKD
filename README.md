@@ -26,7 +26,7 @@ kitti
 ```
 cd tools/
 ```
-Training the Raw Point-Cloud Model on the Voxel-RCNN Baseline Network with 4 GPUs:
+Training the raw point-cloud model on the Voxel-RCNN baseline network with 4 GPUs:
 ```
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4 train.py --cfg_file ./cfgs/kitti_models/voxel_rcnn/rpvoxel_nr.yaml
 ```
@@ -48,7 +48,7 @@ kitti
 ```
 cd tools/
 ```
-Training the Raw Point-Cloud Model on the Voxel-RCNN Baseline Network with 4 GPUs:
+Training the compressed point-cloud model on the Voxel-RCNN baseline network with 4 GPUs:
 ```
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node=4 train.py --cfg_file ./cfgs/kitti_models/voxel_rcnn/rpvoxel_rcnn.yaml
 ```
