@@ -57,7 +57,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node
 The proposed CDTS transfers distilled knowledge from raw to low-quality compressed data, significantly improving detection
 accuracy.
 
-<img src="docs/CDTS3.png" align="center" width="50%">
+<img src="docs/CDTS3.png" align="center" width="70%">
 
 ### Dataset
 ```
