@@ -59,6 +59,26 @@ accuracy.
 
 <img src="docs/CDTS3.png" align="center" width="50%">
 
+### Dataset
+```
+kitti
+│── ImageSets
+│── gt_database
+│── gt_database_ori
+│── training
+│   ├──calib & velodyne & velodyne_c10 & velodyne_c11 & velodyne_c12 & label_2 & image_2 & planes
+```
+* The folders “velodyne,” “velodyne_c10,” “velodyne_c11,” and “velodyne_c12” store raw, PCC-S-C10, PCC-S-C11, and PCC-S-C12 point-cloud data, respectively. When training with raw and PCC-S-C11 data, the folder “gt_database_ori” contains the raw ground-truth annotations, while “gt_database” contains the corresponding PCC-S-C11 ground-truth annotations.
+
+### Training
+```
+cd tools/
+```
+Performing CDTS on the Voxel-RCNN baseline network with 4 GPUs:
+```
+bash scripts/dist_train.sh 4 --cfg_file cfgs/kitti_models/voxel_rcnn/rpvoxel_mmdv3.yaml
+```
+
 ## License
 
 `SMS` is released under the [Apache 2.0 license](LICENSE).
